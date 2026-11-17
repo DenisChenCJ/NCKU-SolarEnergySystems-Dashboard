@@ -51,7 +51,7 @@ def scrub(text):
     return text.replace(key, "***") if key else text
 
 
-def http_json(url, params=None, headers=None, tries=3):
+def http_json(url, params=None, headers=None, tries=4):
     if params:
         url = url + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "ncku-solar-dashboard", **(headers or {})})
@@ -66,7 +66,7 @@ def http_json(url, params=None, headers=None, tries=3):
                 break
         except Exception as e:  # 逾時、連線中斷、JSON 格式錯誤
             last = SourceError(scrub("%s: %s" % (type(e).__name__, e)))
-        time.sleep(2 * (attempt + 1))
+        time.sleep(5 * (attempt + 1))  # Open-Meteo 偶爾連線逾時，間隔拉長再試
     raise last
 
 
