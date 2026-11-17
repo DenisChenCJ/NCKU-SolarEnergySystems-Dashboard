@@ -265,7 +265,13 @@
         h('td', { class: 'num', text: diff == null ? '—' : (diff >= 0 ? '+' : '−') + Math.abs(diff).toFixed(1) })));
       rows++;
     });
-    if (!rows) body.appendChild(h('tr', null, h('td', { colspan: '5', text: '還沒有可以比較的紀錄。網站開始運作兩天後會出現第一筆。' })));
+    if (!rows) {
+      const last = snaps[snaps.length - 1];
+      const text = last
+        ? '已經存了 ' + snaps.length + ' 份預報快照（最近一份：' + fmtTime(last.taken_at) + '）。要等被預報的那一天過完，才會出現第一筆對照。'
+        : '還沒有存到預報快照。系統每天 05:30、17:00 前後各存一份，被預報的那一天過完後，就會出現第一筆對照。';
+      body.appendChild(h('tr', null, h('td', { colspan: '5', text: text })));
+    }
   }
 
   async function main() {

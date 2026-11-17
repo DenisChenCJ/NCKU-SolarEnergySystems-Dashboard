@@ -29,9 +29,9 @@ CWA_BASE = "https://opendata.cwa.gov.tw/api/v1/rest/datastore"
 OPEN_METEO = "https://api.open-meteo.com/v1/forecast"
 
 KEEP_DAYS = 30
-# 決策時間點的快照：（名稱, 幾點幾分之後的第一次執行就存）。排程會延遲，所以提早半小時開始算
-SNAPSHOT_SLOTS = [("0530", 5 * 60), ("1700", 16 * 60 + 30)]
-SNAPSHOT_WINDOW_MIN = 180
+# 決策時間點的快照：（名稱, 從幾分開始, 到幾分為止），以當天 0 點起算的分鐘數。
+# GitHub 的排程常延遲或跳過，所以時段拉長到下一個決策點之前，只要其間有執行一次就存得到
+SNAPSHOT_SLOTS = [("0530", 5 * 60, 16 * 60 + 30), ("1700", 16 * 60 + 30, 24 * 60)]
 
 # 日照燈號：預報日照量 ÷ 晴天理論值
 LEVEL_GOOD = 0.65
@@ -413,8 +413,8 @@ def update_history(out_dir, loc_id, entry, solar_ok, now):
     snapshots = [s for s in hist.get("snapshots", []) if s["date"] >= cutoff_day]
     minutes = now.hour * 60 + now.minute
     today = now.date().isoformat()
-    for slot, start in SNAPSHOT_SLOTS:
-        due = start <= minutes < start + SNAPSHOT_WINDOW_MIN
+    for slot, start, end in SNAPSHOT_SLOTS:
+        due = start <= minutes < end
         taken = any(s["date"] == today and s["slot"] == slot for s in snapshots)
         # 沒有日照預報的快照沒有比較價值，等下一次執行再試
         if due and not taken and solar_ok:
