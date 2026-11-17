@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>概況｜氣象儀表板</title>
+  <meta name="description" content="看天氣來調度電池：今天、明天的日照夠不夠，一眼就知道。">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="overview">
+  <nav class="nav" aria-label="主選單">
+    <div class="wrap">
+      <a class="brand" href="./">氣象儀表板</a>
+      <a href="./" aria-current="page">概況</a>
+      <a href="forecast.html">詳細預報</a>
+      <a href="history.html">歷史紀錄</a>
+      <a href="about.html">關於</a>
+      <span id="loc-select"></span>
+    </div>
+  </nav>
+  <div id="notice" class="notice" role="status" hidden></div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow" data-place>讀取中…</p>
+        <h1>看天氣，調度電池。</h1>
+        <p class="lead">太陽能發多少電，要看天氣。先知道今天、明天的日照夠不夠，才能決定電池什麼時候充、要留多少電。</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <div id="alerts" class="alerts"></div>
+        <div class="grid two">
+          <div class="card" id="card-today"></div>
+          <div class="card" id="card-tomorrow"></div>
+        </div>
+        <a class="more" href="about.html#lamp">燈號怎麼算</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>今天與明天的日照</h2>
+        <p class="sub">每小時的日照量預報。曲線越高，太陽能板能發的電越多。</p>
+        <div id="chart-sun"></div>
+        <a class="more" href="forecast.html">看詳細預報</a>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>現在</h2>
+        <p class="sub" id="now-note">讀取中…</p>
+        <div class="grid three" id="now"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>想看更多</h2>
+        <p class="sub">細節都放在下面幾頁。</p>
+        <div class="grid three">
+          <a class="card" href="forecast.html"><p class="title">詳細預報</p><p>未來三天每小時的日照、雲量、氣溫，以及每 3 小時的天氣與降雨機率。</p><p class="go">前往 ›</p></a>
+          <a class="card" href="history.html"><p class="title">歷史紀錄</p><p>過去 30 天的日照與氣溫，還有「當時的預報」和「實際結果」的對照。</p><p class="go">前往 ›</p></a>
+          <a class="card" href="about.html"><p class="title">關於這個頁面</p><p>這個頁面在做什麼、燈號怎麼算、資料從哪裡來。</p><p class="go">前往 ›</p></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>資料來源：<a href="https://opendata.cwa.gov.tw/" rel="noopener">中央氣象署</a>（預報、觀測、颱風、警特報）；每小時日照量、雲量與氣溫預報來自 <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>（CC BY 4.0）。</p>
+      <p>最後更新：<span data-updated>—</span>（台灣時間），每小時自動更新。日照燈號是粗估，不代表實際發電量。</p>
+      <p>NCKU 太陽能供電系統專案 · <a href="../">回到首頁</a></p>
+    </div>
+  </footer>
+  <script src="../assets/charts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

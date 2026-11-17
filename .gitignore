@@ -1,0 +1,12 @@
+# 氣象資料由排程產生，存放在 data 分支，不放進 main
+weather/data/
+_site/
+
+# 密鑰一律不進倉庫
+.env
+.env.*
+*.key
+secrets.*
+
+.DS_Store
+__pycache__/

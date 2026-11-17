@@ -1,0 +1,13 @@
+{
+  "_說明": "儀表板支援的地點清單。要新增地點，就在 locations 加一筆。座標請用鄉鎮市區公所的位置，並只取到小數點後 2 位。cwa_dataset 是該縣市「鄉鎮 3 天預報」的資料集代號（F-D0047 系列）。",
+  "locations": [
+    {
+      "id": "tainan-south",
+      "county": "臺南市",
+      "town": "南區",
+      "latitude": 22.96,
+      "longitude": 120.19,
+      "cwa_dataset": "F-D0047-077"
+    }
+  ]
+}

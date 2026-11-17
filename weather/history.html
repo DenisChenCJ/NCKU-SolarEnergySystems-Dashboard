@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>歷史紀錄｜氣象儀表板</title>
+  <meta name="description" content="過去 30 天的日照與氣溫，以及當時的預報和實際結果的對照。">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="history">
+  <nav class="nav" aria-label="主選單">
+    <div class="wrap">
+      <a class="brand" href="./">氣象儀表板</a>
+      <a href="./">概況</a>
+      <a href="forecast.html">詳細預報</a>
+      <a href="history.html" aria-current="page">歷史紀錄</a>
+      <a href="about.html">關於</a>
+      <span id="loc-select"></span>
+    </div>
+  </nav>
+  <div id="notice" class="notice" role="status" hidden></div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow" data-place>讀取中…</p>
+        <h1>歷史紀錄</h1>
+        <p class="lead">過去 30 天的日照與氣溫，以及預報準不準。</p>
+      </div>
+    </section>
+
+    <section class="band" id="history-empty" hidden>
+      <div class="wrap"><p class="sub">歷史紀錄還沒有產生。網站開始運作後，會自動累積。</p></div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>每日日照量</h2>
+        <p class="sub">每天一整天累積的日照量（kWh/m²）。這是氣象模型事後估算的值，不是現場量測。</p>
+        <div id="chart-daily"></div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <h2>預報 vs. 實際</h2>
+        <p class="sub">系統在前一天 17:00 和當天 05:30 各看一次預報。這裡把當時看到的預報，和事後的實際值放在一起比較。單位是 kWh/m²。</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>日期</th><th class="num">前一天 17:00 的預報</th><th class="num">當天 05:30 的預報</th><th class="num">實際（估算）</th><th class="num">預報偏差</th></tr></thead>
+            <tbody id="compare-rows"></tbody>
+          </table>
+        </div>
+        <p class="small">預報偏差＝預報－實際，優先用前一天 17:00 的預報。正值代表預報太樂觀。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>氣溫</h2>
+        <p class="sub">最近測站每小時的氣溫觀測（°C）。</p>
+        <div id="chart-temp"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>資料來源：<a href="https://opendata.cwa.gov.tw/" rel="noopener">中央氣象署</a>（預報、觀測、颱風、警特報）；每小時日照量、雲量與氣溫預報來自 <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>（CC BY 4.0）。</p>
+      <p>最後更新：<span data-updated>—</span>（台灣時間），每小時自動更新。日照燈號是粗估，不代表實際發電量。</p>
+      <p>NCKU 太陽能供電系統專案 · <a href="../">回到首頁</a></p>
+    </div>
+  </footer>
+  <script src="../assets/charts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

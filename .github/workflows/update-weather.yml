@@ -1,0 +1,88 @@
+name: 更新氣象資料並發布網站
+
+on:
+  schedule:
+    # 時間是 UTC（台灣時間減 8 小時）。排在第 17 分，避開整點的尖峰
+    - cron: '17 * * * *'
+    # 兩個決策時間點（台灣時間 05:30、17:00）之前各加跑一次
+    - cron: '0 21 * * *'
+    - cron: '30 8 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 把資料推到 data 分支
+  pages: write      # 發布 GitHub Pages
+  id-token: write
+  actions: write    # 讓排程重新啟用自己
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 取回上一次的資料（data 分支）
+        run: |
+          if git ls-remote --exit-code --heads origin data >/dev/null; then
+            git fetch --depth=1 origin data
+            git archive FETCH_HEAD weather/data | tar -x
+          fi
+
+      - name: 抓取氣象資料
+        id: fetch
+        continue-on-error: true   # 抓取失敗也要繼續發布，網頁才會保留上一次的資料
+        env:
+          CWA_API_KEY: ${{ secrets.CWA_API_KEY }}
+        run: python3 scripts/fetch_weather.py
+
+      - name: 把資料存回 data 分支（每次覆蓋，只留最新一筆紀錄）
+        if: steps.fetch.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          work="$RUNNER_TEMP/data-branch"
+          mkdir -p "$work/weather"
+          cp -R weather/data "$work/weather/"
+          printf '這個分支只放排程自動產生的氣象資料，每次更新都會整個覆蓋。程式在 main 分支。\n' > "$work/README.md"
+          cd "$work"
+          git init -q -b data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "氣象資料 $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
+
+      - name: 組合網站（程式＋資料）
+        run: |
+          mkdir _site
+          cp index.html _site/
+          cp -R assets weather _site/
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: 重新啟用排程（公開倉庫 60 天沒有活動，排程會被停用）
+        if: github.event_name == 'schedule'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/update-weather.yml/enable"
+
+      - name: 抓取失敗時，讓這次執行顯示為失敗
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "::error::氣象資料抓取失敗，網站保留上一次的資料。"
+          exit 1

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>關於｜氣象儀表板</title>
+  <meta name="description" content="這個氣象儀表板在做什麼、日照燈號怎麼算、資料從哪裡來。">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="about">
+  <nav class="nav" aria-label="主選單">
+    <div class="wrap">
+      <a class="brand" href="./">氣象儀表板</a>
+      <a href="./">概況</a>
+      <a href="forecast.html">詳細預報</a>
+      <a href="history.html">歷史紀錄</a>
+      <a href="about.html" aria-current="page">關於</a>
+      <span id="loc-select"></span>
+    </div>
+  </nav>
+  <div id="notice" class="notice" role="status" hidden></div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow" data-place>讀取中…</p>
+        <h1>關於這個頁面</h1>
+        <p class="lead">它在做什麼、燈號怎麼算、資料從哪裡來。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap prose">
+        <h2>這是什麼</h2>
+        <p>這是「NCKU 太陽能供電系統專案」的公開參考頁面。專案研究的是一套家用的太陽能加電池系統，目標是：太陽能用到盡、市電用在刀口、電池用得長久。</p>
+        <p>太陽能板發多少電，完全看天氣。如果明天是大晴天，今晚就可以放心把電池的電用掉，明天再用太陽能充回來；如果明天陰雨，今晚就要省著用。所以系統在做決定之前，要先看天氣。這個頁面把做決定需要的天氣資訊整理在一起。</p>
+
+        <h2>一天兩個決策時間點</h2>
+        <ul>
+          <li><strong>清晨 05:30</strong>：看今天的日照，決定白天怎麼充電。</li>
+          <li><strong>傍晚 17:00</strong>：看明天的天氣和颱風動態，決定今晚要保留多少電。</li>
+        </ul>
+
+        <h2 id="lamp">日照燈號怎麼算</h2>
+        <p>把「預報的全天日照量」除以「理想晴天的全天日照量」，得到一個百分比：</p>
+        <ul>
+          <li><strong>充足</strong>：65% 以上</li>
+          <li><strong>普通</strong>：35% 到 65%</li>
+          <li><strong>不足</strong>：不到 35%</li>
+        </ul>
+        <p>「理想晴天」是用緯度和日期算出來的理論值（聯合國糧農組織 FAO-56 的公式），所以夏天和冬天可以用同一把尺來比。實際的大晴天通常落在 75% 到 90%。</p>
+        <p><strong>這是粗估。</strong>它沒有考慮現場的遮蔭、太陽能板的角度和溫度，所以不等於實際發電量。之後會改用依照實際發電紀錄校正過的模型。</p>
+
+        <h2>名詞</h2>
+        <ul>
+          <li><strong>日照量（W/m²）</strong>：每平方公尺的地面，當下接收到多少太陽功率。晴天中午大約 700 到 1,000。</li>
+          <li><strong>每日日照量（kWh/m²）</strong>：把一整天的日照量加起來。1 kWh 就是 1 度電。</li>
+          <li><strong>降雨機率</strong>：那個時段下雨的機率。</li>
+        </ul>
+
+        <h2>資料來源與更新</h2>
+        <ul>
+          <li><strong>中央氣象署</strong>：鄉鎮天氣預報（每 3 小時）、最近測站的即時觀測、颱風路徑、縣市天氣警特報。</li>
+          <li><strong>Open-Meteo</strong>：每小時的日照量、雲量、氣溫預報。中央氣象署沒有提供日照量預報，所以這部分用 Open-Meteo。</li>
+        </ul>
+        <p>資料每小時自動更新一次。如果某一次沒有抓到，頁面會繼續顯示上一次的資料，並在最上方標示「資料已過時」。歷史紀錄保留 30 天。</p>
+        <p>這次資料的更新時間：<span data-updated>—</span>（台灣時間）。</p>
+
+        <h2>地點</h2>
+        <p>頁面上的地點只顯示到鄉鎮市區。日照預報用的是區公所的位置，不是任何住家的位置。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>資料來源：<a href="https://opendata.cwa.gov.tw/" rel="noopener">中央氣象署</a>（預報、觀測、颱風、警特報）；每小時日照量、雲量與氣溫預報來自 <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>（CC BY 4.0）。</p>
+      <p>最後更新：<span data-updated>—</span>（台灣時間），每小時自動更新。日照燈號是粗估，不代表實際發電量。</p>
+      <p>NCKU 太陽能供電系統專案 · <a href="../">回到首頁</a></p>
+    </div>
+  </footer>
+  <script src="../assets/charts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
